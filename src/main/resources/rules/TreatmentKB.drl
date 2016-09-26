@@ -1,0 +1,22 @@
+package rules
+
+import com.borjaeg.drools.Treatment;
+
+
+rule "sulfur-appletree-spider" @Defeasible
+
+when
+
+    Treatment : Treatment (getProduct() == 'sulfur', getCrop() == 'appletree', getPlague() == 'spider')
+
+then
+    Treatment.setMessage("OK");
+end
+
+rule "f-sulfur-appletree-spider" @Defeats("sulfur-appletree-spider")
+
+when
+    Treatment : Treatment (getProduct() == 'sulfur', getCrop() == 'appletree', getPlague() == 'spider')
+then
+    Treatment.setMessage("FORBIDDEN");
+end
