@@ -19,7 +19,7 @@ public class RuleEngine {
 
                 Treatment treatment = new Treatment();
                 treatment.setCrop("appletree");
-                treatment.setPlague("spider");
+                //treatment.setPlague("spider");
                 treatment.setProduct("sulfur");
                 kSession.insert(treatment);
                 kSession.fireAllRules();

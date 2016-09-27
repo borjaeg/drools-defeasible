@@ -6,7 +6,7 @@ package com.borjaeg.drools;
 public class Treatment {
 
     private String crop;
-    private String plague;
+    public String plague;
     private String message = "";
     private String product = "";
 
