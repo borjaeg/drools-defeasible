@@ -3,22 +3,28 @@ package rules
 import com.borjaeg.drools.Treatment;
 
 
-rule "sulfur-appletree-spider" @Defeasible
+rule "sulfur-appletree-spider" 
+//@Defeasible
 dialect "java"
 
 when
-
-    treatment : Treatment (getProduct() == 'sulfur', getCrop() == 'appletree')
-
+    $treatment : Treatment (getProduct() == 'sulfur', getCrop() == 'appletree', getPlague() == 'spider', isForbidden() == false)
 then
-    treatment.setMessage("OK");
-    treatment.setPlague("spider");
+    $treatment.setMessage($treatment.getMessage() + "OK"); 
+    insert($treatment);
 end
 
-rule "f-sulfur-appletree-spider" @Defeats("sulfur-appletree-spider")
+rule "f-sulfur-appletree-spider"
+//@Defeater
+//@Defeats("sulfur-appletree-spider")
 dialect "java"
+salience 1
+no-loop
+
 when
-    treatment : Treatment (getProduct() == 'sulfur', getCrop() == 'appletree', getPlague() == 'spider')
+    $treatment : Treatment (getProduct() == 'sulfur', getCrop() == 'appletree', getPlague() == 'spider')
 then
-    treatment.setMessage("FORBIDDEN");
+	$treatment.setForbidden(true);
+	$treatment.setMessage($treatment.getMessage() + "FORBIDDEN");
+	update($treatment);
 end

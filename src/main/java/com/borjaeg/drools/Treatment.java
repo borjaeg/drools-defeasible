@@ -9,6 +9,8 @@ public class Treatment {
     public String plague;
     private String message = "";
     private String product = "";
+    private boolean isForbidden = false;
+    
 
     public String getProduct() {
         return product;
@@ -34,5 +36,10 @@ public class Treatment {
     public void setMessage(String message) {
         this.message = message;
     }
-
+	public boolean isForbidden() {
+		return isForbidden;
+	}
+	public void setForbidden(boolean isForbidden) {
+		this.isForbidden = isForbidden;
+	}
 }
