@@ -3,6 +3,11 @@ package rules
 import com.borjaeg.drools.Treatment;
 
 
+query getUsersForCard
+    $listOfUserCards : Treatment(getProduct() == 'sulfur')
+end
+
+
 rule "sulfur-appletree-spider" 
 //@Defeasible
 dialect "java"

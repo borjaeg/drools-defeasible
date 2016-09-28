@@ -10,6 +10,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -36,6 +38,10 @@ public class RuleEngine {
                 treatment.setProduct("sulfur");
                 kSession.insert(treatment);
                 kSession.fireAllRules();
+                QueryResults results = kSession.getQueryResults("getUsersForCard", new Object[] { "string" });
+                for (QueryResultsRow row : results){
+                	System.out.println(((Treatment) row.get("$listOfUserCards")).getPlague());
+                }
 
                 for (Object o : kSession.getObjects()){
                      System.out.println(((Treatment) o).getMessage()); 	
