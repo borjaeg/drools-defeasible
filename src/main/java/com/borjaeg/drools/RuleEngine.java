@@ -3,6 +3,7 @@ package com.borjaeg.drools;
  * Created by b3j90 on 26/9/16.
  */
 
+import com.borjaeg.ontology.Treatment;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
 import org.kie.api.KieServices;
@@ -27,9 +28,9 @@ public class RuleEngine {
                 // load up the knowledge base
                 KieServices ks = KieServices.Factory.get();
                 KieContainer kContainer = ks.getKieClasspathContainer();
-                //KieSession kSession = kContainer.newKieSession("ksession-rules");
+                KieSession kSession = kContainer.newKieSession("ksession-rules");
                 
-                StatefulKnowledgeSession kSession = getSession( "rules/TreatmentKB.drl" );
+                //StatefulKnowledgeSession kSession = getSession( "rules/TreatmentKB.drl" );
                
 
                 Treatment treatment = new Treatment();
@@ -50,30 +51,5 @@ public class RuleEngine {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }
-        
-        private static StatefulKnowledgeSession getSession( String ruleFile ) {
-            KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-            try {
-                System.setProperty("drools.negatable", "on");
-                kBuilder.add(ResourceFactory.newClassPathResource(ruleFile),
-                             ResourceType.DRL);
-                if (kBuilder.hasErrors()) {
-                    System.err.println(kBuilder.getErrors());
-                }
-            } finally {
-                System.setProperty("drools.negatable", "off");
-            }
-
-            KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-            kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
-
-
-            KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-            ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
-
-            StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
-            return kSession;
         }
 }

@@ -1,4 +1,4 @@
-package com.borjaeg.drools;
+package com.borjaeg.ontology;
 
 /**
  * Created by b3j90 on 26/9/16.
