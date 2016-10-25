@@ -4,52 +4,45 @@ package com.borjaeg.drools;
  */
 
 import com.borjaeg.ontology.Treatment;
-import org.drools.core.BeliefSystemType;
-import org.drools.core.SessionConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class RuleEngine {
 
-        public static void main(String[] args) {
+	public static void insert(Treatment[] facts) {
 
-            try {
-                // load up the knowledge base
-                KieServices ks = KieServices.Factory.get();
-                KieContainer kContainer = ks.getKieClasspathContainer();
-                KieSession kSession = kContainer.newKieSession("ksession-rules");
-                
-                //StatefulKnowledgeSession kSession = getSession( "rules/TreatmentKB.drl" );
-               
+		try {
+			// load up the knowledge base
+			KieServices ks = KieServices.Factory.get();
+			KieContainer kContainer = ks.getKieClasspathContainer();
+			KieSession kSession = kContainer.newKieSession("ksession-rules");
+			// StatefulKnowledgeSession kSession = getSession(
+			// "rules/TreatmentKB.drl" );
+			for (Treatment fact: facts)
+				kSession.insert(fact);
+			
+			kSession.fireAllRules();
+			query(kSession);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-                Treatment treatment = new Treatment();
-                treatment.setCrop("appletree");
-                treatment.setPlague("spider");
-                treatment.setProduct("sulfur");
-                kSession.insert(treatment);
-                kSession.fireAllRules();
-                QueryResults results = kSession.getQueryResults("getUsersForCard", new Object[] { "string" });
-                for (QueryResultsRow row : results){
-                	System.out.println(((Treatment) row.get("$listOfUserCards")).getPlague());
-                }
+	private static void query(KieSession kSession) {
+		QueryResults results = kSession.getQueryResults("getUsersForCard", new Object[] { "string" });
+		for (QueryResultsRow row : results) {
+			System.out.println(((Treatment) row.get("$listOfUserCards")).getProduct());
+		}
+	}
 
-                for (Object o : kSession.getObjects()){
-                     System.out.println(((Treatment) o).getMessage()); 	
-                }
+	private static void printObjects(KieSession kSession) {
+		for (Object o : kSession.getObjects()) {
+			Treatment t = (Treatment) o; 
+			System.out.println(t.getMessage() + ": "+ t.getProduct());
+		}
 
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+	}
 }

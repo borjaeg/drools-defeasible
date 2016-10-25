@@ -1,21 +1,34 @@
 package rules
 
-import com.borjaeg.drools.Treatment;
+import com.borjaeg.ontology.Treatment;
 
 
 query getUsersForCard
-    $listOfUserCards : Treatment(getProduct() == 'sulfur')
+    $listOfUserCards : Treatment(getPlague() == 'spider', getCrop() == 'appletree', isForbidden() == false)
 end
 
 
 rule "sulfur-appletree-spider" 
 //@Defeasible
 dialect "java"
+//salience 0
 
 when
     $treatment : Treatment (getProduct() == 'sulfur', getCrop() == 'appletree', getPlague() == 'spider', isForbidden() == false)
 then
-    $treatment.setMessage($treatment.getMessage() + "OK"); 
+    //$treatment.setMessage($treatment.getMessage() + " OK"); 
+    $treatment.setMessage("OK"); 
+    insert($treatment);
+end
+
+rule "decen-appletree-spider" 
+//@Defeasible
+dialect "java"
+//salience 0
+when
+    $treatment : Treatment (getProduct() == 'decen', getCrop() == 'appletree', getPlague() == 'spider', isForbidden() == false)
+then
+    $treatment.setMessage("OK"); 
     insert($treatment);
 end
 
@@ -23,13 +36,14 @@ rule "f-sulfur-appletree-spider"
 //@Defeater
 //@Defeats("sulfur-appletree-spider")
 dialect "java"
-salience 1
+//salience 1
 no-loop
 
 when
     $treatment : Treatment (getProduct() == 'sulfur', getCrop() == 'appletree', getPlague() == 'spider')
 then
 	$treatment.setForbidden(true);
-	$treatment.setMessage($treatment.getMessage() + "FORBIDDEN");
+	//$treatment.setMessage($treatment.getMessage() + " FORBIDDEN");
+	$treatment.setMessage("FORBIDDEN"); 
 	update($treatment);
 end
